@@ -1,0 +1,368 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Chi la pensa così?</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800&family=IBM+Plex+Mono:wght@500&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: una colonna stretta da schedario di classe. Le carte si aprono un indizio alla volta e il punteggio scende come in una scala (4, 3, 2, 1). */
+:root{
+  --paper:#E8EBE4; --card:#F6F7F2; --ink:#14213A; --ink-soft:#4B566F; --line:#C8CEC2;
+  --mustard:#E2A826; --on-mustard:#14213A; --teal:#1E6F66; --coral:#C4452F; --violet:#6B4FA3;
+  --good:#1F6B45; --good-bg:#DAEBDD; --bad:#A93226; --bad-bg:#F4DBD5;
+  --f-display:'Big Shoulders Display','Arial Narrow',Impact,sans-serif;
+  --f-body:'Source Sans 3',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1627; --card:#16223A; --ink:#E9EDF4; --ink-soft:#A0ACC4; --line:#2B3A5A;
+    --mustard:#F0B83B; --on-mustard:#14213A; --teal:#4DB8AB; --coral:#F2806A; --violet:#A98FE4;
+    --good:#6CCB93; --good-bg:#163428; --bad:#F29488; --bad-bg:#3A1F1F;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1627; --card:#16223A; --ink:#E9EDF4; --ink-soft:#A0ACC4; --line:#2B3A5A;
+  --mustard:#F0B83B; --on-mustard:#14213A; --teal:#4DB8AB; --coral:#F2806A; --violet:#A98FE4;
+  --good:#6CCB93; --good-bg:#163428; --bad:#F29488; --bad-bg:#3A1F1F;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--paper); color:var(--ink); font-family:var(--f-body); font-size:17px; line-height:1.5;
+  padding-block:20px 40px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.wrap{max-width:42rem;margin-inline:auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3,p,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.display{font-family:var(--f-display);font-weight:800;text-transform:uppercase;line-height:.92;text-wrap:balance}
+
+/* setup */
+.hero{display:flex;flex-direction:column;gap:14px}
+.hero h1{font-family:var(--f-display);font-weight:800;text-transform:uppercase;line-height:.88;font-size:clamp(3.6rem,17vw,7rem);letter-spacing:.005em}
+.hero .lead{max-width:34rem;color:var(--ink-soft)}
+.steps{display:flex;align-items:flex-end;gap:6px;height:72px}
+.steps span{flex:0 0 auto;width:3.1rem;background:var(--mustard);color:var(--on-mustard);font-family:var(--f-mono);font-size:.8rem;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px;font-weight:500}
+.steps span:nth-child(1){height:72px}.steps span:nth-child(2){height:54px;opacity:.85}.steps span:nth-child(3){height:36px;opacity:.7}.steps span:nth-child(4){height:18px;opacity:.55}
+.steps small{font-family:var(--f-mono);font-size:.74rem;color:var(--ink-soft);align-self:center;margin-left:6px;line-height:1.3}
+.panel{background:var(--card);border:1px solid var(--line);padding:18px;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:8px}
+.field>label,.field>.lbl{font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:8px}
+.seg button{flex:1 1 7rem;min-height:46px;padding:8px 12px;border:2px solid var(--ink);background:transparent;font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.names{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:8px}
+.names label{display:flex;align-items:center;gap:8px;border:1px solid var(--line);padding:6px 10px;background:var(--paper)}
+.names input{flex:1;min-width:0;border:0;background:transparent;color:inherit;font:inherit;padding:6px 0}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--c,var(--ink));flex:0 0 auto}
+.btn{min-height:52px;padding:10px 22px;border:2px solid var(--ink);background:var(--mustard);color:var(--on-mustard);font-family:var(--f-display);font-weight:800;font-size:1.35rem;text-transform:uppercase;letter-spacing:.03em}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:active{transform:translateY(1px)}
+details.how{border-top:1px solid var(--line);padding-top:12px}
+details.how summary{font-weight:700;cursor:pointer}
+details.how ul{margin-top:10px;display:flex;flex-direction:column;gap:6px;padding-left:1.1rem;list-style:disc}
+
+/* scoreboard */
+.board{display:flex;flex-wrap:wrap;gap:8px}
+.chip{flex:1 1 7rem;display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);padding:8px 10px;border-bottom:4px solid var(--line);min-width:0}
+.chip.on{border-bottom-color:var(--c);border-color:var(--ink);border-bottom-width:4px}
+.chip .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.chip .pt{font-family:var(--f-mono);font-weight:500;font-variant-numeric:tabular-nums}
+.progress{display:flex;gap:3px}
+.progress i{flex:1;height:6px;background:var(--line)}
+.progress i.done{background:var(--ink)}
+.progress i.now{background:var(--mustard)}
+
+/* card */
+.q{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:clamp(2rem,9vw,3rem);line-height:.98;text-wrap:balance}
+.q em{font-style:normal;color:var(--teal)}
+.turn{display:flex;align-items:center;gap:8px;color:var(--ink-soft)}
+.turn b{color:var(--ink)}
+.clues{display:flex;flex-direction:column;gap:8px}
+.clue{display:flex;gap:14px;align-items:flex-start;padding:14px;border:1px solid var(--ink);background:var(--card)}
+.clue .pts{flex:0 0 3.4rem;font-family:var(--f-mono);font-size:.85rem;font-weight:500;background:var(--mustard);color:var(--on-mustard);text-align:center;padding:3px 0}
+.clue p{min-width:0;overflow-wrap:anywhere}
+.clue.locked{border:1px dashed var(--line);background:transparent;color:var(--ink-soft)}
+.clue.locked .pts{background:transparent;border:1px solid var(--line);color:var(--ink-soft)}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.actions .btn{flex:1 1 12rem}
+.hint{font-size:.9rem;color:var(--ink-soft)}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{width:100%;text-align:left;padding:14px 16px;min-height:52px;border:2px solid var(--ink);background:var(--card);font-weight:600;overflow-wrap:anywhere}
+.opt:hover:not(:disabled){background:var(--mustard);color:var(--on-mustard)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--good-bg);border-color:var(--good);color:var(--ink)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--bad);color:var(--ink)}
+.opt.dim{opacity:.55}
+.opt .tag{display:block;font-family:var(--f-mono);font-size:.72rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;margin-top:4px;color:var(--ink-soft)}
+
+/* verdict */
+.verdict{border:2px solid var(--ink);background:var(--card);padding:18px;display:flex;flex-direction:column;gap:12px}
+.verdict.good{border-color:var(--good)}
+.verdict.bad{border-color:var(--bad)}
+.verdict .status{font-family:var(--f-mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+.verdict.good .status{color:var(--good)}
+.verdict.bad .status{color:var(--bad)}
+.verdict h3{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:2rem;line-height:1}
+.verdict ul{display:flex;flex-direction:column;gap:6px;padding-left:1.1rem;list-style:disc}
+.era{font-family:var(--f-mono);font-size:.8rem;color:var(--ink-soft)}
+
+/* final */
+.rank{display:flex;flex-direction:column;gap:8px}
+.rank li{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:var(--card);padding:12px 14px}
+.rank li.win{border:2px solid var(--ink);background:var(--mustard);color:var(--on-mustard)}
+.rank .pos{font-family:var(--f-display);font-weight:800;font-size:1.8rem;width:2rem;line-height:1}
+.rank .nm{flex:1;min-width:0;overflow-wrap:anywhere;font-weight:700}
+.rank .sc{font-family:var(--f-mono);font-variant-numeric:tabular-nums;font-weight:500}
+.sheet{display:flex;flex-direction:column;gap:8px}
+.sheet details{border:1px solid var(--line);background:var(--card);padding:10px 14px}
+.sheet summary{font-weight:700;cursor:pointer}
+.sheet ul{margin-top:8px;display:flex;flex-direction:column;gap:4px;padding-left:1.1rem;list-style:disc}
+.sheet .miss{border-color:var(--bad)}
+h2.sec{font-family:var(--f-display);font-weight:800;text-transform:uppercase;font-size:1.7rem}
+@media (prefers-reduced-motion:no-preference){.btn,.opt,.chip{transition:background .15s,transform .1s}}
+</style>
+
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+var IDEO=[
+ {id:'liberalismo',nome:'Liberalismo',era:'Eredità dell’Ottocento',rel:['conservatorismo','chiesa','socialismo'],
+  clues:['Esalta il valore della libertà.','Esalta l’iniziativa economica individuale.','Chiede allo Stato di astenersi da ogni intervento nel campo dell’economia.','Per questa corrente le uniche leggi che devono regolare il mercato sono quelle della libera concorrenza.'],
+  scheda:['Esalta il valore della libertà e dell’iniziativa economica individuale.','Chiede allo Stato di astenersi da ogni intervento in economia.','Le uniche leggi sul mercato sono quelle della libera concorrenza.']},
+ {id:'conservatorismo',nome:'Conservatorismo',era:'Eredità dell’Ottocento',rel:['liberalismo','socialismo','chiesa'],
+  clues:['Guarda con preoccupazione alle rivendicazioni di operai e contadini.','Sostiene che gli scioperi sprofonderebbero la società nel disordine.','Chiede allo Stato di reprimere tutte le agitazioni popolari.','Ritiene che la diffusione della scolarizzazione possa compromettere i privilegi secolari delle classi più potenti.'],
+  scheda:['Si preoccupa delle rivendicazioni di operai e contadini.','Teme che gli scioperi portino il disordine e vuole reprimere le agitazioni popolari.','Pensa che la scolarizzazione minacci i privilegi delle classi più potenti.']},
+ {id:'socialismo',nome:'Marxismo ortodosso (rivoluzionario)',era:'Seconda Internazionale, 1889-1914',rel:['socialdemocrazia','chiesa','liberalismo'],
+  clues:['Si ispira a Karl Marx, autore del Capitale.','Sostiene che i padroni dei mezzi di produzione sfruttano le masse, impadronendosi dei frutti del loro lavoro.','Ritiene necessaria e imminente la crisi del capitalismo e rifiuta il riformismo.','Per questa corrente il partito deve preparare il proletariato alla rivoluzione, per arrivare a una società senza classi.'],
+  scheda:['Per Marx i padroni dei mezzi di produzione sfruttano le masse.','Per i marxisti ortodossi la crisi del capitalismo è necessaria e imminente.','Rifiutano il riformismo: il partito prepara il proletariato alla rivoluzione violenta.']},
+ {id:'socialdemocrazia',nome:'Socialdemocrazia (revisionismo)',era:'Seconda Internazionale, 1889-1914',rel:['socialismo','liberalismo'],
+  clues:['Rivede, cioè ripensa, i fondamenti dell’analisi di Marx.','Mette in luce la necessità di un’azione democratica da parte della classe operaia.','Rifiuta la rivoluzione e punta sulle riforme sociali.','È una delle due tendenze della Seconda Internazionale, in contrasto con quella ortodossa o rivoluzionaria.'],
+  scheda:['Ripensa i fondamenti dell’analisi di Marx.','Rifiuta la rivoluzione.','Punta su un’azione democratica della classe operaia per favorire le riforme sociali.']},
+ {id:'chiesa',nome:'Dottrina sociale della Chiesa',era:'1891, enciclica Rerum Novarum',rel:['socialismo','liberalismo','conservatorismo'],
+  clues:['Cerca una proposta sociale coerente con il messaggio evangelico.','Denuncia gli eccessi del capitalismo e condanna il liberismo, per la mancanza di preoccupazioni morali in ambito economico.','Condanna le teorie socialiste che vogliono abolire la proprietà privata, difesa come «diritto naturale», e condanna la lotta di classe.','Invita lo Stato a intervenire e propone la collaborazione tra padroni e operai. Il testo di riferimento è la Rerum Novarum.'],
+  scheda:['Con Leone XIII, nel 1891, l’enciclica Rerum Novarum («Sulle cose nuove»).','Condanna sia il liberismo senza morale sia il socialismo e la lotta di classe.','Invita lo Stato a intervenire, esalta la collaborazione tra padroni e operai e riconosce le organizzazioni sindacali di tipo corporativo.']},
+ {id:'principio',nome:'Principio di nazionalità',era:'Prima metà dell’Ottocento',rel:['nazionalismo','liberalismo'],
+  clues:['Parte dalla consapevolezza dell’identità culturale e storica del proprio popolo, cioè dal patriottismo.','Considera l’idea di nazione sinonimo di libertà e democrazia.','Fonda la nazione sulla volontà dei cittadini e sull’autonoma decisione dei popoli.','Pensa che le nazioni non siano rivali tra loro e che i loro rapporti siano regolati dal diritto internazionale.'],
+  scheda:['La nazione è sinonimo di libertà e democrazia.','Si fonda sulla volontà dei cittadini e sull’autonoma decisione dei popoli.','Le nazioni non sono rivali: i rapporti sono regolati dal diritto internazionale.']},
+ {id:'nazionalismo',nome:'Nazionalismo',era:'Fine Ottocento, metà Novecento',rel:['principio','razzismo'],
+  clues:['Pretende la superiorità culturale e anche razziale del proprio popolo sugli altri, ritenuti inferiori.','Considera le nazioni rivali tra loro.','Pensa che tra le nazioni valga la legge dell’evoluzione, che premia il più forte e danneggia il più debole: servono la guerra e la «selezione naturale».','Esalta la forza e la guerra come strumento di miglioramento sociale. Ne esistono versioni francese (revanche), tedesca (pangermanesimo), italiana (terre irredente) e slava (panslavismo).'],
+  scheda:['L’idea di nazione diventa affermazione e superiorità di un popolo.','Le nazioni sono rivali e la guerra è necessaria.','Versioni diverse: francese, tedesca, italiana, panslavista.']},
+ {id:'razzismo',nome:'Teorie razziste',era:'Ottocento',rel:['nazionalismo','positivismo'],
+  clues:['Ritiene che esistano razze superiori e razze inferiori.','Pensa che la razza superiore abbia il diritto-dovere di sottomettere quella inferiore.','Usa argomentazioni pseudoscientifiche, ma in realtà è legato ad antichi pregiudizi. Tra i suoi autori ci sono Gobineau e Chamberlain.','Negli Stati Uniti prende la forma di organizzazioni segrete come il Ku Klux Klan, nate per terrorizzare i neri.'],
+  scheda:['Il razzismo ritiene che esistano razze superiori e inferiori.','Gobineau scrive il Saggio sull’ineguaglianza delle razze umane (1855); Chamberlain riprende il mito della razza ariana.','Secondo la genetica contemporanea la razza pura non esiste: siamo tutti parenti.']},
+ {id:'positivismo',nome:'Positivismo',era:'1850-1890',rel:['irrazionalismo','psicoanalisi'],
+  clues:['Ha dominato la cultura tra il 1850 e il 1890.','Ha una prospettiva trionfalistica di progresso, ritenuto necessario e inarrestabile.','Viene proposto come visione totale del mondo.','Tra Ottocento e Novecento si rivela sempre meno adeguato a interpretare i cambiamenti sociali e politici e le trasformazioni delle scienze.'],
+  scheda:['Dominò la cultura tra il 1850 e il 1890.','Vede un progresso necessario e inarrestabile.','Tra Ottocento e Novecento non basta più come visione totale del mondo.']},
+ {id:'irrazionalismo',nome:'Irrazionalismo e vitalismo',era:'Tra Ottocento e Novecento',rel:['positivismo','psicoanalisi'],
+  clues:['Si diffonde quando il Positivismo non è più accettato come visione totale del mondo.','Sostiene che la realtà umana dipenda da fattori come l’istinto, l’intuizione e la volontà.','Una delle critiche più dure al Positivismo viene dal filosofo tedesco Friedrich Nietzsche (1844-1900).','Propone il superuomo, una figura in grado di scegliere nuovi valori e di realizzare la propria individualità.'],
+  scheda:['La realtà umana dipende da istinto, intuizione e volontà.','Questi aspetti si studiano con quadri di riferimento diversi da quelli delle scienze naturali.','Nietzsche propone il superuomo, alternativa all’uomo vittima della tradizione occidentale.']},
+ {id:'psicoanalisi',nome:'Psicoanalisi',era:'Inizio Novecento',rel:['irrazionalismo','positivismo'],
+  clues:['La sua teoria viene elaborata da un medico viennese.','Sostiene che la psiche abbia una vita cosciente, l’Io, e una vita inconscia, l’Es, guidata da leggi proprie.','Ritiene che i contenuti inconsci si possano individuare con l’interpretazione dei sogni da parte del medico psicoanalista.','Il fondatore è Sigmund Freud, autore dell’Interpretazione dei sogni (1900) e dei Tre saggi sulla teoria della sessualità (1905).'],
+  scheda:['Freud (1856-1939) distingue una vita cosciente (Io) e una inconscia (Es).','I contenuti inconsci emergono con l’interpretazione dei sogni.','Ha cambiato la terapia dei malati mentali e ha influenzato la cultura e la mentalità occidentale.']}
+];
+var BY={};IDEO.forEach(function(i){BY[i.id]=i;});
+var CONF=['socialismo|socialdemocrazia','principio|nazionalismo','razzismo|nazionalismo','positivismo|irrazionalismo'];
+function conflict(a,b){return CONF.indexOf(a+'|'+b)>-1||CONF.indexOf(b+'|'+a)>-1;}
+var COL=['var(--mustard)','var(--teal)','var(--coral)','var(--violet)'];
+function shuffle(a){var r=a.slice(),i,j,t;for(i=r.length-1;i>0;i--){j=Math.floor(Math.random()*(i+1));t=r[i];r[i]=r[j];r[j]=t;}return r;}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+var S={screen:'setup',n:2,mode:'completo',names:['','','',''],teams:[],deck:[],idx:0,turn:0,missed:{}};
+var app=document.getElementById('app');
+
+function teamName(i){return S.names[i]&&S.names[i].trim()?S.names[i].trim():(S.n===1?'Giocatore':'Squadra '+(i+1));}
+
+function buildOptions(x){
+  var rel=shuffle(x.rel.map(function(id){return BY[id];})).slice(0,2);
+  var rest=shuffle(IDEO.filter(function(y){return y.id!==x.id&&rel.indexOf(y)<0;}));
+  var others=rel.concat(rest).slice(0,4);
+  return shuffle(others.concat([x])).map(function(y){return y.id;});
+}
+function buildIntruso(x){
+  var own=shuffle(x.clues).slice(0,3).map(function(t){return {t:t,from:x.id};});
+  var pool=IDEO.filter(function(y){return y.id!==x.id&&!conflict(x.id,y.id);});
+  var rel=pool.filter(function(y){return x.rel.indexOf(y.id)>-1;});
+  var src=(rel.length&&Math.random()<0.7)?rel:pool;
+  var y=shuffle(src)[0];
+  var odd={t:shuffle(y.clues)[0],from:y.id};
+  var st=shuffle(own.concat([odd]));
+  return {type:'intruso',id:x.id,stmts:st,odd:st.indexOf(odd),res:null};
+}
+function buildDeck(mode){
+  var a=[],b=[];
+  if(mode!=='intruso'){a=shuffle(IDEO).map(function(x){return {type:'indizi',id:x.id,shown:1,options:null,res:null};});}
+  if(mode!=='indizi'){b=shuffle(IDEO).slice(0,8).map(buildIntruso);}
+  return a.concat(b);
+}
+function maxPoints(){return S.deck.reduce(function(s,c){return s+(c.type==='indizi'?4:3);},0);}
+
+function start(){
+  S.teams=[];for(var i=0;i<S.n;i++){S.teams.push({name:teamName(i),score:0});}
+  S.deck=buildDeck(S.mode);S.idx=0;S.turn=0;S.missed={};S.screen='play';render(true);
+}
+
+function scoreboard(){
+  return '<div class="board" role="list" aria-label="Punteggi">'+S.teams.map(function(t,i){
+    return '<div class="chip'+(i===S.turn&&S.screen==='play'?' on':'')+'" role="listitem" style="--c:'+COL[i]+'"><span class="dot"></span><span class="nm">'+esc(t.name)+'</span><span class="pt">'+t.score+'</span></div>';
+  }).join('')+'</div>';
+}
+function progress(){
+  return '<div class="progress" aria-hidden="true">'+S.deck.map(function(c,i){return '<i class="'+(i<S.idx?'done':(i===S.idx?'now':''))+'"></i>';}).join('')+'</div>';
+}
+function bullets(x){return '<ul>'+x.scheda.map(function(b){return '<li>'+esc(b)+'</li>';}).join('')+'</ul>';}
+function turnLine(){
+  var i=S.turn;
+  return '<p class="turn" style="--c:'+COL[i]+'"><span class="dot"></span><span>Tocca a <b>'+esc(S.teams[i].name)+'</b></span></p>';
+}
+
+function viewSetup(){
+  var seg=function(act,val,cur,label){return '<button type="button" data-act="'+act+'" data-val="'+val+'" aria-pressed="'+(cur===val)+'">'+label+'</button>';};
+  var nm='';for(var i=0;i<S.n;i++){nm+='<label style="--c:'+COL[i]+'"><span class="dot"></span><span class="sr" style="position:absolute;left:-9999px">Nome squadra '+(i+1)+'</span><input id="team-'+i+'" data-name="'+i+'" type="text" maxlength="22" placeholder="'+(S.n===1?'Giocatore':'Squadra '+(i+1))+'" value="'+esc(S.names[i])+'"></label>';}
+  return '<header class="hero"><p class="eyebrow">Storia · Il primo Novecento · Unità 1</p><h1 id="focus" tabindex="-1">Chi la pensa così?</h1>'+
+  '<p class="lead">Un indizio alla volta, indovina di quale corrente ideologica o culturale si parla. Meno indizi servono, più punti vale la carta.</p>'+
+  '<div class="steps" aria-hidden="true"><span>4 pt</span><span>3 pt</span><span>2 pt</span><span>1 pt</span><small>indizi usati<br>1, 2, 3, 4</small></div></header>'+
+  '<section class="panel" aria-label="Impostazioni">'+
+  '<div class="field"><span class="lbl" id="l-n">Quante squadre?</span><div class="seg" role="group" aria-labelledby="l-n">'+seg('teams',1,S.n,'Da solo')+seg('teams',2,S.n,'2')+seg('teams',3,S.n,'3')+seg('teams',4,S.n,'4')+'</div></div>'+
+  '<div class="field"><span class="lbl">Nomi (facoltativi)</span><div class="names">'+nm+'</div></div>'+
+  '<div class="field"><span class="lbl" id="l-m">Che gioco?</span><div class="seg" role="group" aria-labelledby="l-m">'+seg('mode','indizi',S.mode,'Indizi (11 carte)')+seg('mode','intruso',S.mode,'Trova l’intruso (8)')+seg('mode','completo',S.mode,'Completo (19)')+'</div></div>'+
+  '<button class="btn" type="button" data-act="start">Inizia la partita</button>'+
+  '<details class="how"><summary>Come si gioca in classe</summary><ul>'+
+  '<li>Proietta la pagina e dividi la classe in squadre. Le squadre giocano a turno.</li>'+
+  '<li>Indizi: si parte con un indizio. La squadra può rispondere subito o chiedere un altro indizio, ma ogni indizio in più costa un punto. Si sceglie una sola risposta tra cinque.</li>'+
+  '<li>Trova l’intruso: tre frasi descrivono la corrente indicata, una appartiene a un’altra. Una sola risposta, 3 punti.</li>'+
+  '<li>Dopo ogni carta compare una scheda di ripasso. A fine partita trovi l’elenco di ciò che è stato sbagliato.</li>'+
+  '<li>Tutte le carte si basano solo sulle pagine del manuale fornito: il capitolo 2, Il dibattito politico e culturale, senza il capitolo sull’antisemitismo.</li></ul></details>'+
+  '</section>';
+}
+
+function viewPlay(){
+  var c=S.deck[S.idx],x=BY[c.id],last=S.idx===S.deck.length-1,h='';
+  h+=scoreboard()+progress();
+  if(c.type==='indizi'){
+    h+='<div><p class="eyebrow">Carta '+(S.idx+1)+' di '+S.deck.length+' · Indizi</p><h2 class="q" id="focus" tabindex="-1">Di quale corrente si parla?</h2></div>';
+    if(!c.res){h+=turnLine();}
+    h+='<ol class="clues">';
+    for(var i=0;i<4;i++){
+      h+= i<c.shown ? '<li class="clue"><span class="pts">'+(4-i)+' pt</span><p>'+esc(x.clues[i])+'</p></li>'
+                    : '<li class="clue locked"><span class="pts">'+(4-i)+' pt</span><p>Indizio chiuso</p></li>';
+    }
+    h+='</ol>';
+    if(!c.res&&!c.options){
+      h+='<div class="actions"><button class="btn" type="button" data-act="answer">Rispondiamo ('+(5-c.shown)+' pt)</button>'+(c.shown<4?'<button class="btn ghost" type="button" data-act="more">Un altro indizio</button>':'')+'</div>';
+      h+='<p class="hint">Quando si risponde non si possono più chiedere indizi.</p>';
+    }
+    if(c.options){
+      h+='<div class="opts" role="group" aria-label="Scegli la corrente">'+c.options.map(function(id){
+        var cls='opt',tag='';
+        if(c.res){
+          if(id===c.id){cls+=' right';tag='<span class="tag">Risposta corretta</span>';}
+          else if(id===c.res.picked){cls+=' wrong';tag='<span class="tag">Scelta della squadra</span>';}
+          else{cls+=' dim';}
+        }
+        return '<button type="button" class="'+cls+'" data-act="pick" data-val="'+id+'"'+(c.res?' disabled':'')+'>'+esc(BY[id].nome)+tag+'</button>';
+      }).join('')+'</div>';
+    }
+    if(c.res){
+      var ok=c.res.ok;
+      h+='<section class="verdict '+(ok?'good':'bad')+'" aria-live="polite"><p class="status">'+(ok?'Giusto! +'+c.res.pts+' '+(c.res.pts===1?'punto':'punti'):'Non è questa. Nessun punto')+'</p>'+
+        '<h3>'+esc(x.nome)+'</h3><p class="era">'+esc(x.era)+'</p>'+bullets(x)+
+        '<button class="btn" type="button" data-act="next">'+(last?'Vedi i risultati':'Prossima carta')+'</button></section>';
+    }
+  } else {
+    h+='<div><p class="eyebrow">Carta '+(S.idx+1)+' di '+S.deck.length+' · Trova l’intruso</p><h2 class="q" id="focus" tabindex="-1">Quale frase non appartiene a <em>'+esc(x.nome)+'</em>?</h2></div>';
+    if(!c.res){h+=turnLine();}
+    h+='<div class="opts" role="group" aria-label="Scegli la frase intrusa">'+c.stmts.map(function(s,i){
+      var cls='opt',tag='';
+      if(c.res){
+        if(i===c.odd){cls+=' right';tag='<span class="tag">Intrusa, descrive: '+esc(BY[s.from].nome)+'</span>';}
+        else if(i===c.res.picked){cls+=' wrong';tag='<span class="tag">Scelta della squadra</span>';}
+        else{cls+=' dim';}
+      }
+      return '<button type="button" class="'+cls+'" data-act="stmt" data-val="'+i+'"'+(c.res?' disabled':'')+'>'+esc(s.t)+tag+'</button>';
+    }).join('')+'</div>';
+    if(!c.res){h+='<p class="hint">Una sola risposta per carta. Vale 3 punti.</p>';}
+    if(c.res){
+      var ok2=c.res.ok;
+      h+='<section class="verdict '+(ok2?'good':'bad')+'" aria-live="polite"><p class="status">'+(ok2?'Giusto! +3 punti':'Non è questa. Nessun punto')+'</p>'+
+        '<h3>'+esc(x.nome)+'</h3><p class="era">'+esc(x.era)+'</p>'+bullets(x)+
+        '<button class="btn" type="button" data-act="next">'+(last?'Vedi i risultati':'Prossima carta')+'</button></section>';
+    }
+  }
+  return h;
+}
+
+function viewFinal(){
+  var order=S.teams.map(function(t,i){return {n:t.name,s:t.score,i:i};}).sort(function(a,b){return b.s-a.s;});
+  var top=order[0].s,h='';
+  var winners=order.filter(function(o){return o.s===top;});
+  var title=S.n===1?'Hai totalizzato '+top+' punti su '+maxPoints():(winners.length>1?'Pareggio in testa':'Vince '+esc(winners[0].n));
+  h+='<header class="hero"><p class="eyebrow">Partita finita</p><h1 id="focus" tabindex="-1" style="font-size:clamp(2.6rem,12vw,5rem)">'+title+'</h1></header>';
+  if(S.n>1){
+    h+='<ol class="rank" aria-label="Classifica">'+order.map(function(o,p){return '<li class="'+(o.s===top?'win':'')+'"><span class="pos">'+(p+1)+'</span><span class="nm">'+esc(o.n)+'</span><span class="sc">'+o.s+' pt</span></li>';}).join('')+'</ol>';
+    h+='<p class="hint">Punti disponibili in totale: '+maxPoints()+'.</p>';
+  }
+  var ms=IDEO.filter(function(x){return S.missed[x.id];});
+  h+='<section class="sheet"><h2 class="sec">'+(ms.length?'Da ripassare':'Nessun errore')+'</h2>';
+  if(!ms.length){h+='<p>Tutte le correnti sono state riconosciute al primo colpo.</p>';}
+  ms.forEach(function(x){h+='<details class="miss" open><summary>'+esc(x.nome)+'</summary><p class="era">'+esc(x.era)+'</p>'+bullets(x)+'</details>';});
+  h+='</section>';
+  h+='<section class="sheet"><h2 class="sec">Tutte le schede</h2>'+IDEO.map(function(x){return '<details><summary>'+esc(x.nome)+'</summary><p class="era">'+esc(x.era)+'</p>'+bullets(x)+'</details>';}).join('')+'</section>';
+  h+='<div class="actions"><button class="btn" type="button" data-act="again">Gioca ancora</button><button class="btn ghost" type="button" data-act="setup">Cambia impostazioni</button></div>';
+  return h;
+}
+
+function render(top){
+  app.innerHTML = S.screen==='setup'?viewSetup():(S.screen==='play'?viewPlay():viewFinal());
+  if(top){
+    window.scrollTo(0,0);
+    var f=document.getElementById('focus');
+    if(f){try{f.focus({preventScroll:true});}catch(e){f.focus();}}
+  }
+}
+
+app.addEventListener('input',function(e){
+  var i=e.target.getAttribute&&e.target.getAttribute('data-name');
+  if(i!==null&&i!==undefined){S.names[+i]=e.target.value;}
+});
+app.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  var act=b.getAttribute('data-act'),val=b.getAttribute('data-val'),c=S.deck[S.idx];
+  if(act==='teams'){S.n=+val;render(false);}
+  else if(act==='mode'){S.mode=val;render(false);}
+  else if(act==='start'){start();}
+  else if(act==='more'){if(c.shown<4){c.shown++;render(false);}}
+  else if(act==='answer'){c.options=buildOptions(BY[c.id]);render(false);}
+  else if(act==='pick'){
+    if(c.res)return;
+    var ok=val===c.id,pts=ok?5-c.shown:0;
+    c.res={picked:val,ok:ok,pts:pts};S.teams[S.turn].score+=pts;
+    if(!ok){S.missed[c.id]=true;}
+    render(false);
+    var v=app.querySelector('.verdict');if(v&&v.scrollIntoView){v.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  }
+  else if(act==='stmt'){
+    if(c.res)return;
+    var i=+val,ok2=i===c.odd;
+    c.res={picked:i,ok:ok2};if(ok2){S.teams[S.turn].score+=3;}else{S.missed[c.id]=true;}
+    render(false);
+    var v2=app.querySelector('.verdict');if(v2&&v2.scrollIntoView){v2.scrollIntoView({block:'nearest',behavior:'smooth'});}
+  }
+  else if(act==='next'){
+    S.idx++;S.turn=(S.turn+1)%S.n;
+    if(S.idx>=S.deck.length){S.screen='final';}
+    render(true);
+  }
+  else if(act==='again'){start();}
+  else if(act==='setup'){S.screen='setup';render(true);}
+});
+render(false);
+})();
+</script>
+
+</body></html>
